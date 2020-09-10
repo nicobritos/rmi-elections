@@ -10,8 +10,8 @@ public enum Party {
     LEOPARD,
     LYNX,
     OWL,
-    TURTLE,
-    TIGER;
+    TIGER,
+    TURTLE;
 
     public static Party from(@NotNull String name){
         return valueOf(name.toUpperCase());
