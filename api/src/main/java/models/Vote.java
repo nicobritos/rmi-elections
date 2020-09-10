@@ -2,6 +2,7 @@ package models;
 
 import com.sun.istack.internal.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class Vote {
@@ -25,11 +26,19 @@ public class Vote {
         return province;
     }
 
-    public Map<Party, Integer> getRankedVotes() {
+    public Map<Party, Integer> getSTARVotes() {
         return rankedVotes;
     }
 
-    public Party getFptpVote() {
+    public Map<Party, Boolean> getSPAVVotes() {
+        Map<Party, Boolean> ans = new HashMap<>();
+        for (Party party : rankedVotes.keySet()){
+            ans.put(party, rankedVotes.getOrDefault(party, 0) > 0);
+        }
+        return ans;
+    }
+
+    public Party getFPTPVote() {
         return fptpVote;
     }
 }

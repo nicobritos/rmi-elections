@@ -3,15 +3,18 @@ package models;
 import com.sun.istack.internal.NotNull;
 
 public enum Party {
-    TIGER,
+    // NO CAMBIAR EL ORDEN (ORDEN ALFABETICO)
+
+    BUFFALO,
+    JACKALOPE,
     LEOPARD,
     LYNX,
-    TURTLE,
     OWL,
-    JACKALOPE,
-    BUFFALO;
+    TURTLE,
+    TIGER;
 
     public static Party from(@NotNull String name){
         return valueOf(name.toUpperCase());
     }
+
 }
