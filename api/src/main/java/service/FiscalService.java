@@ -1,8 +1,8 @@
-package server;
+package service;
 
 import models.Party;
 
-public interface FiscalServer {
+public interface FiscalService {
     /**
      * Suscribe a un fiscal del partido y número de mesa indicados.
      */

@@ -1,11 +1,11 @@
-package server;
+package service;
 
 import com.sun.istack.internal.NotNull;
 import models.Vote;
 
 import java.util.Collection;
 
-public interface VotingServer {
+public interface VotingService {
     /**
      * Registra un voto.
      */

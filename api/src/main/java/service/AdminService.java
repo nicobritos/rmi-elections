@@ -1,6 +1,6 @@
-package server;
+package service;
 
-public interface AdminServer {
+public interface AdminService {
     /**
      * Abre los comicios. Imprime en stdout el estado de los comicios o el error correspondiente.
      * @return  true en caso de que se hayan abierto los comicios satisfactoriamente.

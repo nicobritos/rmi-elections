@@ -9,7 +9,7 @@
   <groupId>ar.edu.itba.g5</groupId>
   <artifactId>elecciones-server</artifactId>
   <version>1.0-SNAPSHOT</version>
-  <name>elecciones-server</name>
+  <name>elecciones-service</name>
   <dependencies>
     <dependency>
       <groupId>ar.edu.itba.g5</groupId>
