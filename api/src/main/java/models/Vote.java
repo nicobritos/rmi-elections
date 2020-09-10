@@ -1,6 +1,6 @@
 package models;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;

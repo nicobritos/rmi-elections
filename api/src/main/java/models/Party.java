@@ -1,6 +1,6 @@
 package models;
 
-import com.sun.istack.internal.NotNull;
+import com.sun.istack.NotNull;
 
 public enum Party {
     // NO CAMBIAR EL ORDEN (ORDEN ALFABETICO)
