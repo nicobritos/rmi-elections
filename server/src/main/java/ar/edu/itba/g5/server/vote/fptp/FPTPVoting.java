@@ -23,6 +23,7 @@ public class FPTPVoting {
         this.lock.unlock();
     }
 
+    // Tengo que sincronizar porque puede llamarse mientras se registran votos
     public FPTPResults getResults() {
         FPTPResults results = new FPTPResults();
 

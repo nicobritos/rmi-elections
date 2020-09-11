@@ -15,39 +15,39 @@ public class SPAVResults implements Iterable<SPAVResult> {
     public SPAVResults(List<Party> previousWinners) {
         this.resultList = new LinkedList<>();
         this.winners = previousWinners;
-        currentWinner = null;
+        this.currentWinner = null;
     }
 
-    public void addResult(Party party, double approvalScore){
-        if(finished){
+    public void addResult(Party party, double approvalScore) {
+        if (this.finished) {
             throw new IllegalStateException("Ya se finalizo esta votacion");
         }
         RoundResult result = new RoundResult(party, approvalScore);
-        resultList.add(result);
-        if(currentWinner == null || Double.compare(currentWinner.getApprovalScore(), result.getApprovalScore()) < 0) {
-            currentWinner = result;
+        this.resultList.add(result);
+        if (this.currentWinner == null || Double.compare(this.currentWinner.getApprovalScore(), result.getApprovalScore()) < 0) {
+            this.currentWinner = result;
         }
     }
 
     public List<SPAVResult> getResultList() {
-        resultList.sort(SPAVResult::compareTo);
-        return resultList;
+        this.resultList.sort(SPAVResult::compareTo);
+        return this.resultList;
     }
 
     public List<Party> getWinners() {
-        finished = true;
-        if(currentWinner != null && !winners.contains(currentWinner.getParty())){
-            winners.add(currentWinner.getParty());
+        this.finished = true;
+        if (this.currentWinner != null && !this.winners.contains(this.currentWinner.getParty())) {
+            this.winners.add(this.currentWinner.getParty());
         }
-        return winners;
+        return this.winners;
     }
 
     @Override
     public Iterator<SPAVResult> iterator() {
-        return getResultList().iterator();
+        return this.getResultList().iterator();
     }
 
-    private static class RoundResult implements SPAVResult{
+    private static class RoundResult implements SPAVResult {
         private final Party party;
         private final double approvalScore;
 
@@ -58,12 +58,12 @@ public class SPAVResults implements Iterable<SPAVResult> {
 
         @Override
         public Party getParty() {
-            return party;
+            return this.party;
         }
 
         @Override
         public double getApprovalScore() {
-            return approvalScore;
+            return this.approvalScore;
         }
     }
 }

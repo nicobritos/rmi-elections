@@ -16,15 +16,15 @@ public class STARResults {
     }
 
     public FirstRound getFirstRound() {
-        return firstRound;
+        return this.firstRound;
     }
 
     public SecondRound getSecondRound() {
-        return secondRound;
+        return this.secondRound;
     }
 
-    public Party getWinner(){
-        return secondRound.getWinner();
+    public Party getWinner() {
+        return this.secondRound.getWinner();
     }
 
     public static class FirstRound implements Iterable<FirstRoundResult> {
@@ -35,21 +35,21 @@ public class STARResults {
             this.results = new LinkedList<>();
         }
 
-        public void addResult(Party party, long score){
-            if(finished){
+        public void addResult(Party party, long score) {
+            if (this.finished) {
                 throw new IllegalStateException("Ya finalizo la votacion");
             }
-            results.add(new Entry(party, score));
+            this.results.add(new Entry(party, score));
         }
 
         public List<FirstRoundResult> getResults() {
-            results.sort(FirstRoundResult::compareTo);
-            return results;
+            this.results.sort(FirstRoundResult::compareTo);
+            return this.results;
         }
 
-        public List<Party> getTop2(){
-            finished = true;
-            List<FirstRoundResult> orderedResults = getResults();
+        public List<Party> getTop2() {
+            this.finished = true;
+            List<FirstRoundResult> orderedResults = this.getResults();
             List<Party> top2 = new LinkedList<>();
             top2.add(orderedResults.get(0).getParty());
             top2.add(orderedResults.get(1).getParty());
@@ -58,13 +58,11 @@ public class STARResults {
 
         @Override
         public Iterator<FirstRoundResult> iterator() {
-            return getResults().iterator();
+            return this.getResults().iterator();
         }
 
 
-
-
-        private static class Entry implements FirstRoundResult{
+        private static class Entry implements FirstRoundResult {
             private final Party party;
             private final long score;
 
@@ -75,12 +73,12 @@ public class STARResults {
 
             @Override
             public Party getParty() {
-                return party;
+                return this.party;
             }
 
             @Override
             public long getScore() {
-                return score;
+                return this.score;
             }
         }
     }
@@ -90,24 +88,23 @@ public class STARResults {
         private final List<SecondRoundResult> results = new LinkedList<>();
 
         public SecondRound(Party partyA, double percentageA, Party partyB, double percentageB) {
-            results.add(new Entry(partyA, percentageA));
-            results.add(new Entry(partyB, percentageB));
+            this.results.add(new Entry(partyA, percentageA));
+            this.results.add(new Entry(partyB, percentageB));
         }
 
         public List<SecondRoundResult> getResults() {
-            results.sort(SecondRoundResult::compareTo);
-            return results;
+            this.results.sort(SecondRoundResult::compareTo);
+            return this.results;
         }
 
-        public Party getWinner(){
-            return getResults().get(0).getParty();
+        public Party getWinner() {
+            return this.getResults().get(0).getParty();
         }
 
         @Override
         public Iterator<SecondRoundResult> iterator() {
-            return getResults().iterator();
+            return this.getResults().iterator();
         }
-
 
 
         private static class Entry implements SecondRoundResult {
@@ -121,12 +118,12 @@ public class STARResults {
 
             @Override
             public Party getParty() {
-                return party;
+                return this.party;
             }
 
             @Override
             public double getPercentage() {
-                return percentage;
+                return this.percentage;
             }
         }
     }
