@@ -1,9 +1,12 @@
 package models;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Vote {
+public class Vote implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final PollingStation pollingStation;
     private final Province province;
     private final Map<Party, Integer> rankedVotes;
@@ -17,26 +20,26 @@ public class Vote {
     }
 
     public PollingStation getPollingStation() {
-        return pollingStation;
+        return this.pollingStation;
     }
 
     public Province getProvince() {
-        return province;
+        return this.province;
     }
 
     public Map<Party, Integer> getSTARVotes() {
-        return rankedVotes;
+        return this.rankedVotes;
     }
 
     public Map<Party, Boolean> getSPAVVotes() {
         Map<Party, Boolean> ans = new HashMap<>();
-        for (Party party : rankedVotes.keySet()){
-            ans.put(party, rankedVotes.getOrDefault(party, 0) > 0);
+        for (Party party : this.rankedVotes.keySet()){
+            ans.put(party, this.rankedVotes.getOrDefault(party, 0) > 0);
         }
         return ans;
     }
 
     public Party getFPTPVote() {
-        return fptpVote;
+        return this.fptpVote;
     }
 }
