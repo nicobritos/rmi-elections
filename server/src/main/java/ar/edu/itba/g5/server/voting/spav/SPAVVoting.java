@@ -1,11 +1,9 @@
-package ar.edu.itba.g5.server.voting;
+package ar.edu.itba.g5.server.voting.spav;
 
 import com.sun.istack.internal.NotNull;
 import models.Party;
-import utils.Pair;
 
 import java.util.*;
-import java.util.function.ToDoubleFunction;
 
 public class SPAVVoting {
     private final Collection<Map<Party, Boolean>> votes = new LinkedList<>();
@@ -14,7 +12,7 @@ public class SPAVVoting {
         votes.add(vote);
     }
 
-    public Pair<List<Pair<Party, Double>>,List<Party>> nextRound(@NotNull List<Party> previousWinners){
+    public SPAVResults nextRound(@NotNull List<Party> previousWinners){
         Map<Party, Double> roundScores = new HashMap<>();
 
         for(Map<Party, Boolean> vote: votes){
@@ -32,16 +30,10 @@ public class SPAVVoting {
             }
         }
 
-        List<Pair<Party, Double>> results = new LinkedList<>();
+        SPAVResults spavResults = new SPAVResults(previousWinners);
         for(Party party: roundScores.keySet()){
-            results.add(new Pair<>(party, roundScores.get(party)));
+            spavResults.addResult(party, roundScores.get(party));
         }
-        results.sort(Comparator
-                .comparingDouble((ToDoubleFunction<Pair<Party, Double>>)Pair::getRight).reversed()
-                .thenComparing(Pair::getLeft));
-
-        List<Party> winners = new LinkedList<>(previousWinners);
-        winners.add(results.get(0).getLeft());
-        return new Pair<>(results, winners);
+        return spavResults;
     }
 }

@@ -8,7 +8,6 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <groupId>ar.edu.itba.g5</groupId>
     <artifactId>elecciones-client</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>elecciones-client</name>

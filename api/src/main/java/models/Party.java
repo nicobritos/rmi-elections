@@ -1,6 +1,6 @@
 package models;
 
-public enum Party {
+public enum Party implements Comparable<Party>{
     // NO CAMBIAR EL ORDEN (ORDEN ALFABETICO)
 
     BUFFALO,
@@ -14,5 +14,4 @@ public enum Party {
     public static Party from(String name){
         return valueOf(name.toUpperCase());
     }
-
 }
