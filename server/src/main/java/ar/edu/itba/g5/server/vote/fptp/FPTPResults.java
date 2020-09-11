@@ -6,25 +6,25 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FPTPResults implements Iterable<FPTPResult>{
+public class FPTPResults implements Iterable<FPTPResult> {
     private final List<FPTPResult> results = new LinkedList<>();
 
     public List<FPTPResult> getSortedResultsList() {
-        results.sort(FPTPResult::compareTo);
-        return new LinkedList<>(results);
+        this.results.sort(FPTPResult::compareTo);
+        return new LinkedList<>(this.results);
     }
 
-    public Party getWinner(){
-        return getSortedResultsList().get(0).getParty();
+    public Party getWinner() {
+        return this.getSortedResultsList().get(0).getParty();
     }
 
-    void addResult(Party party, double percentage){
-        results.add(new Entry(party, percentage));
+    void addResult(Party party, double percentage) {
+        this.results.add(new Entry(party, percentage));
     }
 
     @Override
     public Iterator<FPTPResult> iterator() {
-        return getSortedResultsList().iterator();
+        return this.getSortedResultsList().iterator();
     }
 
     private static class Entry implements FPTPResult {
@@ -38,12 +38,12 @@ public class FPTPResults implements Iterable<FPTPResult>{
 
         @Override
         public Party getParty() {
-            return party;
+            return this.party;
         }
 
         @Override
         public double getPercentage() {
-            return percentage;
+            return this.percentage;
         }
     }
 }
