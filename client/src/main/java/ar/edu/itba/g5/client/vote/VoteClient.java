@@ -23,7 +23,6 @@ public class VoteClient {
     private static final String VOTES_PATH_PARAMETER = "votesPath";
     private static final String JAVA_OPT = "D";
 
-
     public static void main(String[] args) throws IOException, NotBoundException, ParseException {
         Properties properties = parseCommandLine(args);
         String filepath = properties.getProperty(VOTES_PATH_PARAMETER);
