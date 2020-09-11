@@ -1,6 +1,5 @@
 package ar.edu.itba.g5.server.voting.spav;
 
-import com.sun.istack.internal.NotNull;
 import models.Party;
 
 import java.util.*;
@@ -12,7 +11,7 @@ public class SPAVVoting {
         votes.add(vote);
     }
 
-    public SPAVResults nextRound(@NotNull List<Party> previousWinners){
+    public SPAVResults nextRound(List<Party> previousWinners){
         Map<Party, Double> roundScores = new HashMap<>();
 
         for(Map<Party, Boolean> vote: votes){

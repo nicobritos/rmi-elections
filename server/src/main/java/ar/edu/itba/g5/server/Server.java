@@ -3,7 +3,7 @@ package ar.edu.itba.g5.server;
 import ar.edu.itba.g5.server.services.AdminServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import service.AdminService;
+import service.VoteService;
 
 import java.rmi.AlreadyBoundException;
 import java.rmi.RemoteException;
@@ -19,7 +19,10 @@ public class Server {
 
         Server.registry = LocateRegistry.createRegistry(1100); // TODO
 
-        AdminService adminService = new AdminServiceImpl();
+        AdminServiceImpl adminService = new AdminServiceImpl();
         registry.bind("admin", adminService);
+
+//        VoteService voteService = new VoteServiceImpl(adminService);
+//        registry.bind("vote", voteService);
     }
 }
