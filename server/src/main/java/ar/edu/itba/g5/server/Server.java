@@ -1,8 +1,12 @@
 package ar.edu.itba.g5.server;
 
 import ar.edu.itba.g5.server.services.AdminServiceImpl;
+import ar.edu.itba.g5.server.services.FiscalServiceImpl;
+import ar.edu.itba.g5.server.services.VoteServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import service.FiscalService;
+import service.QueryService;
 import service.VoteService;
 
 import java.rmi.AlreadyBoundException;
@@ -22,7 +26,11 @@ public class Server {
         AdminServiceImpl adminService = new AdminServiceImpl();
         registry.bind("admin", adminService);
 
-//        VoteService voteService = new VoteServiceImpl(adminService);
-//        registry.bind("vote", voteService);
+        VoteServiceImpl voteService = new VoteServiceImpl(adminService);
+        registry.bind("vote", (VoteService) voteService);
+        registry.bind("query", (QueryService) voteService);
+
+        FiscalService fiscalService = new FiscalServiceImpl(adminService);
+        registry.bind("fiscal", fiscalService);
     }
 }
