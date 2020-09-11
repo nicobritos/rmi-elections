@@ -1,4 +1,4 @@
-package ar.edu.itba.g5.server.voting.star;
+package ar.edu.itba.g5.server.vote.star;
 
 import models.Party;
 

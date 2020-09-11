@@ -1,4 +1,4 @@
-package ar.edu.itba.g5.server.voting.fptp;
+package ar.edu.itba.g5.server.vote.fptp;
 
 import models.Party;
 

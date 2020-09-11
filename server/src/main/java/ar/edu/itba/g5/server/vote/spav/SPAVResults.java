@@ -1,4 +1,4 @@
-package ar.edu.itba.g5.server.voting.spav;
+package ar.edu.itba.g5.server.vote.spav;
 
 import models.Party;
 
