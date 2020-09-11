@@ -8,22 +8,27 @@ import exceptions.ElectionStartedException;
 import models.ElectionStatus;
 import models.Party;
 import models.PollingStation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import service.FiscalService;
 import service.FiscalVoteCallback;
 import utils.Event;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class FiscalServiceImpl implements FiscalService {
+public class FiscalServiceImpl extends UnicastRemoteObject implements FiscalService {
+    private static final Logger logger = LoggerFactory.getLogger(FiscalServiceImpl.class);
     private final static int MAX_THREADS = 15;
 
     private final ElectionStatusAware electionStatusAware;
     // FIXME: No se si es lo mejor pero por ahora va
     private final ExecutorService executorService;
 
-    public FiscalServiceImpl(ElectionStatusAware electionStatusAware) {
+    public FiscalServiceImpl(ElectionStatusAware electionStatusAware) throws RemoteException {
+        super();
         this.electionStatusAware = electionStatusAware;
         this.executorService = Executors.newFixedThreadPool(MAX_THREADS);
     }
@@ -39,6 +44,7 @@ public class FiscalServiceImpl implements FiscalService {
     }
 
     private void fireEvent(Event event, FiscalVoteCallback callback) {
+        logger.info("event fired: " + event.getName());
         this.executorService.execute(() -> {
             try {
                 callback.voteMade();

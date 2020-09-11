@@ -9,7 +9,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface FiscalService extends Remote, Serializable {
+public interface FiscalService extends Remote {
     /**
      * Suscribe a un fiscal del partido y número de mesa indicado, llamando al
      * callback cada vez que un voto se realiza para su partido.

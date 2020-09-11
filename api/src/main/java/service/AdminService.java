@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface AdminService extends Remote, Serializable {
+public interface AdminService extends Remote {
     /**
      * Abre los comicios. Imprime en stdout el estado de los comicios o el error correspondiente.
      */

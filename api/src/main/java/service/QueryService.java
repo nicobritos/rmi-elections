@@ -8,7 +8,7 @@ import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-public interface QueryService extends Remote, Serializable {
+public interface QueryService extends Remote {
     /**
      * Devuelve los resultados (parciales si no terminaron) de las elecciones a nivel nacional.
      *

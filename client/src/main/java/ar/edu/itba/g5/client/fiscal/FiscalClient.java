@@ -7,11 +7,14 @@ import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import service.FiscalService;
+import service.FiscalVoteCallback;
 import utils.CommandUtils;
 
 import java.io.IOException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
 
 public class FiscalClient {
@@ -24,14 +27,16 @@ public class FiscalClient {
     public static void main(String[] args) throws IOException, NotBoundException, ParseException {
         Properties properties = parseCommandLine(args);
 
-        FiscalService fiscalService = (FiscalService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/fiscal");
         PollingStation pollingStation = new PollingStation(Integer.parseInt(properties.getProperty(POLLING_STATION_PARAMETER)));
         Party party = Party.from(properties.getProperty(PARTY_NAME_PARAMETER));
+
+        FiscalService fiscalService = (FiscalService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/fiscal");
+        FiscalVoteCallback voteCallback = new FiscalClientCallback(pollingStation, party);
 
         fiscalService.registerFiscal(
                 pollingStation,
                 party,
-                () -> System.out.println("New vote for " + party + " registered on polling place " + pollingStation)
+                voteCallback
         );
         System.out.println("Fiscal of " + party + " registered on polling place " + pollingStation);
     }
@@ -46,5 +51,21 @@ public class FiscalClient {
         partyNameOption.setRequired(true);
 
         return CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, pollingStationOption, partyNameOption);
+    }
+
+    private static class FiscalClientCallback extends UnicastRemoteObject implements FiscalVoteCallback {
+        private final PollingStation pollingStation;
+        private final Party party;
+
+        public FiscalClientCallback(PollingStation pollingStation, Party party) throws RemoteException {
+            super();
+            this.pollingStation = pollingStation;
+            this.party = party;
+        }
+
+        @Override
+        public void voteMade() throws RemoteException {
+            System.out.println("New vote for " + this.party + " registered on polling place " + this.pollingStation);
+        }
     }
 }
