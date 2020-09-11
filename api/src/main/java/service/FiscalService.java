@@ -15,5 +15,5 @@ public interface FiscalService extends Remote, Serializable {
      * callback cada vez que un voto se realiza para su partido.
      * Solo se puede hacer si las elecciones no iniciaron.
      */
-    void registerFiscal(PollingStation pollingStation, Party party, int callback) throws RemoteException, ElectionStartedException, ElectionFinishedException;
+    void registerFiscal(PollingStation pollingStation, Party party, FiscalVoteCallback callback) throws RemoteException, ElectionStartedException, ElectionFinishedException;
 }
