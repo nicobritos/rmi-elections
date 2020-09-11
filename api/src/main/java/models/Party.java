@@ -1,7 +1,5 @@
 package models;
 
-import com.sun.istack.NotNull;
-
 public enum Party {
     // NO CAMBIAR EL ORDEN (ORDEN ALFABETICO)
 
@@ -13,7 +11,7 @@ public enum Party {
     TIGER,
     TURTLE;
 
-    public static Party from(@NotNull String name){
+    public static Party from(String name){
         return valueOf(name.toUpperCase());
     }
 

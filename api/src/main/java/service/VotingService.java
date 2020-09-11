@@ -1,25 +1,17 @@
 package service;
 
-import com.sun.istack.internal.NotNull;
+import exceptions.ElectionFinishedException;
+import exceptions.ElectionNotStartedException;
 import models.Vote;
 
-import java.util.Collection;
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
 
-public interface VotingService {
+public interface VotingService extends Remote, Serializable {
     /**
-     * Registra un voto.
+     * Registra un voto. Si los comicios estan sin iniciar
+     * o si ya finalizaron arroja un error correspondiente
      */
-    void vote(@NotNull Vote vote);
-
-    /**
-     * Registra los votos e imprime en stdout cuantos votos se registraron.
-     * @param votes colección de votos a registrar.
-     */
-    default void votes(@NotNull Collection<Vote> votes){
-        for(Vote vote: votes){
-            vote(vote);
-        }
-
-        System.out.println(votes.size() + " votes registered");
-    }
+    void vote(Vote vote) throws RemoteException, ElectionNotStartedException, ElectionFinishedException;
 }

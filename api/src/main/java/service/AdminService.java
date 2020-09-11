@@ -1,22 +1,26 @@
 package service;
 
-public interface AdminService {
+import exceptions.ElectionFinishedException;
+import exceptions.ElectionNotStartedException;
+import models.ElectionStatus;
+
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface AdminService extends Remote, Serializable {
     /**
      * Abre los comicios. Imprime en stdout el estado de los comicios o el error correspondiente.
-     * @return  true en caso de que se hayan abierto los comicios satisfactoriamente.
-     *          false en caso que las elecciones ya hayan terminado.
      */
-    boolean open();
+    void open() throws RemoteException, ElectionFinishedException;
 
     /**
      * Cierra los comicios. Imprime en stdout el estado de los comicios o el error correspondiente.
-     * @return  true en caso de que se hayan cerrado los comicios satisfactoriamente.
-     *          false en caso de que no se hayan abierto los comicios antes.
      */
-    boolean close();
+    void close() throws RemoteException, ElectionNotStartedException;
 
     /**
      * Consulta el estado de los comicios. Imprime en stdout el estado de los comicios en el momento.
      */
-    void state();
+    ElectionStatus getState() throws RemoteException;
 }

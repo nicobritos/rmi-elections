@@ -1,28 +1,35 @@
 package service;
 
+import exceptions.ElectionNotStartedException;
 import models.Province;
+import models.Table;
 
-public interface QueryService {
+import java.io.Serializable;
+import java.rmi.Remote;
+import java.rmi.RemoteException;
+
+public interface QueryService extends Remote, Serializable {
     /**
-     * Imprime los resultados (parciales si no terminaron) de las elecciones a nivel nacional en un CSV.
+     * Devuelve los resultados (parciales si no terminaron) de las elecciones a nivel nacional.
      *
-     * Si las elecciones no terminaron, imprime solo los porcentajes de los votos FPTP.
-     * Si terminaron, imprime primero el puntaje (STAR) de cada partido y luego los porcentajes.
+     * Si las elecciones no terminaron, devuelve solo los porcentajes de los votos FPTP.
+     * Si terminaron, devuelve el puntaje (STAR) de cada partido y los porcentajes.
      * Al final tambien imprime el ganador.
      */
-    void nationalPercentages(String csvPath);
+    void nationalResults() throws RemoteException, ElectionNotStartedException;
 
     /**
-     * Imprime los resultados (parciales si no terminaron) de las elecciones a nivel provincial en un CSV.
+     * Devuelve los resultados (parciales si no terminaron) de las elecciones a nivel provincial.
      *
      * Si las elecciones no terminaron, imprime solo los porcentajes de los votos FPTP.
      * Si terminaron, imprime primero el indice de aprovación (SPAV) de cada ronda de cada partido
      * con los ganadores luego de cada ronda.
      */
-    void provincialPercentages(String csvPath, Province province);
+    void provinceResults(Province province) throws RemoteException, ElectionNotStartedException;
 
     /**
-     * Imprime los resultados de las elecciones en una mesa en formato de porcentaje FPTP en un CSV.
+     * Devuelve los resultados de las elecciones en una mesa (polling station)
+     * en formato de porcentaje FPTP.
      */
-    void tablePercentages(String csvPath, int table);
+    void pollingStationResults(Table table) throws RemoteException, ElectionNotStartedException;
 }

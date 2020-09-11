@@ -1,7 +1,5 @@
 package models;
 
-import com.sun.istack.NotNull;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,7 +9,7 @@ public class Vote {
     private final Map<Party, Integer> rankedVotes;
     private final Party fptpVote;
 
-    public Vote(int table, @NotNull Province province, @NotNull Map<Party, Integer> rankedVotes, @NotNull Party fptpVote) {
+    public Vote(int table, Province province, Map<Party, Integer> rankedVotes, Party fptpVote) {
         this.table = table;
         this.province = province;
         this.rankedVotes = rankedVotes;
