@@ -1,6 +1,8 @@
-package ar.edu.itba.g5.server.vote.fptp;
+package ar.edu.itba.g5.server.vote;
 
 import models.Party;
+import models.vote.fptp.FPTPResult;
+import models.vote.fptp.FPTPResults;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -25,8 +27,6 @@ public class FPTPVoting {
 
     // Tengo que sincronizar porque puede llamarse mientras se registran votos
     public FPTPResults getResults() {
-        FPTPResults results = new FPTPResults();
-
         // Bloqueo porque necesito un snapshot del mapa
         // y del counter
         this.lock.lock();
@@ -37,10 +37,11 @@ public class FPTPVoting {
         // Puedo iterar tranquilamente porque el snapshot ya lo tengo
         this.lock.unlock();
 
+        Collection<FPTPResult> results = new LinkedList<>();
         for (Party party : votes.keySet()) {
-            results.addResult(party, votes.get(party).doubleValue() / totalVotes);
+            results.add(new FPTPResult(party, votes.get(party).doubleValue() / totalVotes));
         }
 
-        return results;
+        return new FPTPResults(results);
     }
 }

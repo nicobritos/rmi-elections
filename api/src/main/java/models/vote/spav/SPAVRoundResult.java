@@ -1,18 +1,21 @@
-package ar.edu.itba.g5.server.vote.spav;
+package models.vote.spav;
 
 import models.Party;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SPAVResults implements Iterable<SPAVResult> {
+public class SPAVRoundResult implements Iterable<SPAVResult>, Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final List<SPAVResult> resultList;
     private boolean finished = false;
     private final List<Party> winners;
     private SPAVResult currentWinner;
 
-    public SPAVResults(List<Party> previousWinners) {
+    public SPAVRoundResult(List<Party> previousWinners) {
         this.resultList = new LinkedList<>();
         this.winners = previousWinners;
         this.currentWinner = null;
@@ -22,7 +25,7 @@ public class SPAVResults implements Iterable<SPAVResult> {
         if (this.finished) {
             throw new IllegalStateException("Ya se finalizo esta votacion");
         }
-        RoundResult result = new RoundResult(party, approvalScore);
+        SPAVResult result = new SPAVResult(party, approvalScore);
         this.resultList.add(result);
         if (this.currentWinner == null || Double.compare(this.currentWinner.getApprovalScore(), result.getApprovalScore()) < 0) {
             this.currentWinner = result;
@@ -45,25 +48,5 @@ public class SPAVResults implements Iterable<SPAVResult> {
     @Override
     public Iterator<SPAVResult> iterator() {
         return this.getResultList().iterator();
-    }
-
-    private static class RoundResult implements SPAVResult {
-        private final Party party;
-        private final double approvalScore;
-
-        public RoundResult(Party party, double approvalScore) {
-            this.party = party;
-            this.approvalScore = approvalScore;
-        }
-
-        @Override
-        public Party getParty() {
-            return this.party;
-        }
-
-        @Override
-        public double getApprovalScore() {
-            return this.approvalScore;
-        }
     }
 }

@@ -1,6 +1,7 @@
-package ar.edu.itba.g5.server.vote.spav;
+package ar.edu.itba.g5.server.vote;
 
 import models.Party;
+import models.vote.spav.SPAVRoundResult;
 
 import java.util.*;
 
@@ -12,7 +13,7 @@ public class SPAVVoting {
     }
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
-    public SPAVResults nextRound(final List<Party> previousWinners) {
+    public SPAVRoundResult nextRound(final List<Party> previousWinners) {
         Map<Party, Double> roundScores = new HashMap<>();
 
         for (Map<Party, Boolean> vote : this.votes) {
@@ -30,7 +31,7 @@ public class SPAVVoting {
             }
         }
 
-        SPAVResults spavResults = new SPAVResults(previousWinners);
+        SPAVRoundResult spavResults = new SPAVRoundResult(previousWinners);
         for (Party party : roundScores.keySet()) {
             spavResults.addResult(party, roundScores.get(party));
         }

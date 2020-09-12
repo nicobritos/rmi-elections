@@ -1,6 +1,7 @@
-package ar.edu.itba.g5.server.vote.star;
+package ar.edu.itba.g5.server.vote;
 
 import models.Party;
+import models.vote.star.*;
 
 import java.util.*;
 
@@ -13,13 +14,13 @@ public class STARVoting {
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
     public STARResults getResults() {
-        STARResults.FirstRound firstRound = this.firstRound();
+        FirstRound firstRound = this.firstRound();
 
         return new STARResults(firstRound, this.secondRound(firstRound));
     }
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
-    private STARResults.FirstRound firstRound() {
+    private FirstRound firstRound() {
         Map<Party, Long> count = new HashMap<>();
 
         for (Map<Party, Integer> vote : this.votes) {
@@ -28,16 +29,16 @@ public class STARVoting {
             }
         }
 
-        STARResults.FirstRound result = new STARResults.FirstRound();
+        List<FirstRoundResult> results = new LinkedList<>();
         for (Party party : count.keySet()) {
-            result.addResult(party, count.get(party));
+            results.add(new FirstRoundResult(party, count.get(party)));
         }
 
-        return result;
+        return new FirstRound(results);
     }
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
-    private STARResults.SecondRound secondRound(STARResults.FirstRound firstRound) {
+    private SecondRound secondRound(FirstRound firstRound) {
         Party winnerA = firstRound.getTop2().get(0);
         Party winnerB = firstRound.getTop2().get(1);
         long totalVotes = 0;
@@ -59,6 +60,6 @@ public class STARVoting {
         double percentageA = (double) totalA / totalVotes;
         double percentageB = (double) totalB / totalVotes;
 
-        return new STARResults.SecondRound(winnerA, percentageA, winnerB, percentageB);
+        return new SecondRound(new SecondRoundResult(winnerA, percentageA), new SecondRoundResult(winnerB, percentageB));
     }
 }
