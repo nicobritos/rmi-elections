@@ -16,6 +16,7 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class FiscalClient {
     private static final Logger logger = LoggerFactory.getLogger(FiscalClient.class);
@@ -33,6 +34,7 @@ public class FiscalClient {
         FiscalService fiscalService = (FiscalService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/fiscal");
         FiscalVoteCallback voteCallback = new FiscalClientCallback(pollingStation, party);
 
+        // TODO: Try catch
         fiscalService.registerFiscal(
                 pollingStation,
                 party,
@@ -56,16 +58,19 @@ public class FiscalClient {
     private static class FiscalClientCallback extends UnicastRemoteObject implements FiscalVoteCallback {
         private final PollingStation pollingStation;
         private final Party party;
+        private final AtomicInteger count;
 
         public FiscalClientCallback(PollingStation pollingStation, Party party) throws RemoteException {
             super();
             this.pollingStation = pollingStation;
             this.party = party;
+            this.count = new AtomicInteger(0);
         }
 
         @Override
         public void voteMade() throws RemoteException {
-            System.out.println("New vote for " + this.party + " registered on polling place " + this.pollingStation);
+            int count = this.count.addAndGet(1);
+            System.out.println("[" + count + "] New vote for " + this.party + " registered on polling place " + this.pollingStation);
         }
     }
 }

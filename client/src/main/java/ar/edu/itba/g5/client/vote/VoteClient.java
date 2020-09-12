@@ -16,6 +16,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class VoteClient {
     private static final Logger logger = LoggerFactory.getLogger(VoteClient.class);
@@ -29,20 +32,23 @@ public class VoteClient {
         Collection<Vote> votes = VoteParser.parse(filepath);
 
         VoteService voteService = (VoteService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/vote");
-        int emittedVotes = 0;
+        AtomicInteger emittedVotes = new AtomicInteger(0);
+        ExecutorService executorService = Executors.newFixedThreadPool(10);
         for (Vote vote : votes) {
-            try {
-                voteService.vote(vote);
-                emittedVotes++;
-            } catch (ElectionNotStartedException e) {
-                System.err.println("The election has not started yet");
-                System.exit(1);
-            } catch (ElectionFinishedException e) {
-                System.err.println("The election has already finished");
-                System.exit(1);
-            } catch (RemoteException e) {
-                System.err.println("Unknown remote error"); // TODO: Retry vote
-            }
+            executorService.execute(() -> {
+                try {
+                    voteService.vote(vote);
+                    emittedVotes.getAndAdd(1);
+                } catch (ElectionNotStartedException e) {
+                    System.err.println("The election has not started yet");
+                    System.exit(1);
+                } catch (ElectionFinishedException e) {
+                    System.err.println("The election has already finished");
+                    System.exit(1);
+                } catch (RemoteException e) {
+                    System.err.println("Unknown remote error"); // TODO: Retry vote
+                }
+            });
         }
 
         System.out.println(emittedVotes + " votes registered");

@@ -30,7 +30,8 @@ public class EventBus {
 
         Iterator<EventListener> iterator = eventListeners.iterator();
         while (iterator.hasNext()) {
-            this.executorService.execute(() -> iterator.next().handle(event));
+            EventListener eventListener = iterator.next();
+            this.executorService.execute(() -> eventListener.handle(event));
         }
     }
 }

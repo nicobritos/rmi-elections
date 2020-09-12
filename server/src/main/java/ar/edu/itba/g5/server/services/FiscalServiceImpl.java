@@ -44,7 +44,6 @@ public class FiscalServiceImpl extends UnicastRemoteObject implements FiscalServ
     }
 
     private void fireEvent(Event event, FiscalVoteCallback callback) {
-        logger.info("event fired: " + event.getName());
         this.executorService.execute(() -> {
             try {
                 callback.voteMade();
