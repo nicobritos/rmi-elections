@@ -31,11 +31,6 @@ public class SPAVVoting {
             }
         }
 
-        SPAVRoundResult spavResults = new SPAVRoundResult(previousWinners);
-        for (Party party : roundScores.keySet()) {
-            spavResults.addResult(party, roundScores.get(party));
-        }
-
-        return spavResults;
+        return new SPAVRoundResult(roundScores, previousWinners);
     }
 }

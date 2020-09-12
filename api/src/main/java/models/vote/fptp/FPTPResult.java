@@ -1,7 +1,6 @@
 package models.vote.fptp;
 
 import models.Party;
-import models.vote.CountingSystem;
 
 import java.io.Serializable;
 

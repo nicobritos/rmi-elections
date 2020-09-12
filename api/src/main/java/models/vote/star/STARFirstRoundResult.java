@@ -4,11 +4,11 @@ import models.Party;
 
 import java.io.Serializable;
 
-public class FirstRoundResult implements Comparable<FirstRoundResult>, Serializable {
+public class STARFirstRoundResult implements Comparable<STARFirstRoundResult>, Serializable {
     private final Party party;
     private final long score;
 
-    public FirstRoundResult(Party party, long score) {
+    public STARFirstRoundResult(Party party, long score) {
         this.party = party;
         this.score = score;
     }
@@ -22,7 +22,7 @@ public class FirstRoundResult implements Comparable<FirstRoundResult>, Serializa
     }
 
     @Override
-    public int compareTo(FirstRoundResult o) {
+    public int compareTo(STARFirstRoundResult o) {
         int ans = Double.compare(o.getScore(), this.getScore());
         if (ans == 0) {
             return this.getParty().compareTo(o.getParty());

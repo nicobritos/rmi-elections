@@ -3,16 +3,19 @@ package models;
 import java.io.Serializable;
 
 public enum ElectionStatus implements Serializable {
-    UNINITIALIZED, OPEN, FINISHED;
+    UNINITIALIZED("The elections have not started"),
+    OPEN("The elections are open"),
+    FINISHED("The elections are closed");
 
+    private final String string;
     private static final long serialVersionUID = 1L;
+
+    ElectionStatus(String s) {
+        string = s;
+    }
 
     @Override
     public String toString() {
-        switch (this) {
-            case UNINITIALIZED: return "The elections have not started";
-            case OPEN: return "The elections are open";
-            default: return "The elections are closed";
-        }
+        return string;
     }
 }

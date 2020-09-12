@@ -1,14 +1,19 @@
 package models.vote;
 
-public abstract class VoteResultFactory {
-    public static <WhileOpen extends CountingSystem, WhenFinished extends CountingSystem>
+
+public class VoteResultFactory {
+    // Suppresses default constructor, ensuring non-instantiability.
+    private VoteResultFactory(){
+    }
+
+    public static <WhileOpen extends VotingSystemResults, WhenFinished extends VotingSystemResults>
     VoteResult<WhileOpen, WhenFinished>
     withOpenElection(WhileOpen whileOpen)
     {
         return new VoteResult<>(whileOpen, null);
     }
 
-    public static <WhileOpen extends CountingSystem, WhenFinished extends CountingSystem>
+    public static <WhileOpen extends VotingSystemResults, WhenFinished extends VotingSystemResults>
     VoteResult<WhileOpen, WhenFinished>
     withFinishedElection(WhenFinished whenFinished)
     {

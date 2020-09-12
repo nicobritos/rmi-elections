@@ -1,6 +1,4 @@
 package exceptions;
 
-import java.rmi.RemoteException;
-
-public class ElectionStartedException extends RemoteException {
+public class ElectionStartedException extends ElectionStatusException {
 }

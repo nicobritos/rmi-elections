@@ -8,7 +8,6 @@ import models.vote.fptp.FPTPResults;
 import models.vote.spav.SPAVResults;
 import models.vote.star.STARResults;
 
-import java.io.Serializable;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 

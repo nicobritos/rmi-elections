@@ -1,29 +1,26 @@
 package models.vote.star;
 
 import models.Party;
-import models.vote.CountingSystem;
+import models.vote.VotingSystemResults;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
-public class STARResults implements Serializable, CountingSystem {
+public class STARResults implements Serializable, VotingSystemResults {
     private static final long serialVersionUID = 1L;
 
-    private final FirstRound firstRound;
-    private final SecondRound secondRound;
+    private final STARFirstRound firstRound;
+    private final STARSecondRound secondRound;
 
-    public STARResults(FirstRound firstRound, SecondRound secondRound) {
+    public STARResults(STARFirstRound firstRound, STARSecondRound secondRound) {
         this.firstRound = firstRound;
         this.secondRound = secondRound;
     }
 
-    public FirstRound getFirstRound() {
+    public STARFirstRound getFirstRound() {
         return this.firstRound;
     }
 
-    public SecondRound getSecondRound() {
+    public STARSecondRound getSecondRound() {
         return this.secondRound;
     }
 

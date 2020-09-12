@@ -70,7 +70,7 @@ public class FiscalClient {
         @Override
         public void voteMade() throws RemoteException {
             int count = this.count.addAndGet(1);
-            System.out.println("[" + count + "] New vote for " + this.party + " registered on polling place " + this.pollingStation);
+            System.out.println("[" + count + "] New vote for " + this.party + " registered on polling station " + this.pollingStation);
         }
     }
 }

@@ -6,43 +6,31 @@ import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class SPAVRoundResult implements Iterable<SPAVResult>, Serializable {
     private static final long serialVersionUID = 1L;
 
     private final List<SPAVResult> resultList;
-    private boolean finished = false;
     private final List<Party> winners;
-    private SPAVResult currentWinner;
 
-    public SPAVRoundResult(List<Party> previousWinners) {
+    public SPAVRoundResult(Map<Party, Double> roundResults, List<Party> previousWinners) {
         this.resultList = new LinkedList<>();
-        this.winners = previousWinners;
-        this.currentWinner = null;
-    }
+        for (Party party: roundResults.keySet()){
+            resultList.add(new SPAVResult(party, roundResults.get(party)));
+        }
+        resultList.sort(SPAVResult::compareTo);
 
-    public void addResult(Party party, double approvalScore) {
-        if (this.finished) {
-            throw new IllegalStateException("Ya se finalizo esta votacion");
-        }
-        SPAVResult result = new SPAVResult(party, approvalScore);
-        this.resultList.add(result);
-        if (this.currentWinner == null || Double.compare(this.currentWinner.getApprovalScore(), result.getApprovalScore()) < 0) {
-            this.currentWinner = result;
-        }
+        this.winners = new LinkedList<>(previousWinners);
+        this.winners.add(resultList.get(0).getParty());
     }
 
     public List<SPAVResult> getResultList() {
-        this.resultList.sort(SPAVResult::compareTo);
-        return this.resultList;
+        return new LinkedList<>(this.resultList);
     }
 
     public List<Party> getWinners() {
-        this.finished = true;
-        if (this.currentWinner != null && !this.winners.contains(this.currentWinner.getParty())) {
-            this.winners.add(this.currentWinner.getParty());
-        }
-        return this.winners;
+        return new LinkedList<>(this.winners);
     }
 
     @Override

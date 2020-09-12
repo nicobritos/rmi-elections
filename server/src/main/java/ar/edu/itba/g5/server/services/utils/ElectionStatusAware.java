@@ -14,10 +14,10 @@ public interface ElectionStatusAware {
     ElectionStatus getElectionStatus();
 
     /**
-     * @return true si los comicios van a cerrar.
+     * @return true si los comicios estan cerrando.
      * Permite no tomar nuevos votos pero terminar de procesar los actuales
      */
-    boolean willClose();
+    boolean closing();
 
     /**
      * @return el countdownlatch utilizado para evitar cerrar los comicios si hay votos entrantes

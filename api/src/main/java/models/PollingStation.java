@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class PollingStation implements Serializable {
-    private int number;
+    private final int number;
 
     public PollingStation(int number) {
         this.number = number;
@@ -12,10 +12,6 @@ public class PollingStation implements Serializable {
 
     public int getNumber() {
         return this.number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
     }
 
     @Override

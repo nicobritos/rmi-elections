@@ -14,13 +14,13 @@ public class STARVoting {
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
     public STARResults getResults() {
-        FirstRound firstRound = this.firstRound();
+        STARFirstRound firstRound = this.firstRound();
 
         return new STARResults(firstRound, this.secondRound(firstRound));
     }
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
-    private FirstRound firstRound() {
+    private STARFirstRound firstRound() {
         Map<Party, Long> count = new HashMap<>();
 
         for (Map<Party, Integer> vote : this.votes) {
@@ -29,21 +29,21 @@ public class STARVoting {
             }
         }
 
-        List<FirstRoundResult> results = new LinkedList<>();
+        List<STARFirstRoundResult> results = new LinkedList<>();
         for (Party party : count.keySet()) {
-            results.add(new FirstRoundResult(party, count.get(party)));
+            results.add(new STARFirstRoundResult(party, count.get(party)));
         }
 
-        return new FirstRound(results);
+        return new STARFirstRound(results);
     }
 
     // No hace falta sincronizar porque no puede llamarse mientras se registran votos
-    private SecondRound secondRound(FirstRound firstRound) {
+    private STARSecondRound secondRound(STARFirstRound firstRound) {
         Party winnerA = firstRound.getTop2().get(0);
         Party winnerB = firstRound.getTop2().get(1);
         long totalVotes = 0;
-        int totalA = 0;
-        int totalB = 0;
+        long totalA = 0;
+        long totalB = 0;
 
         for (Map<Party, Integer> vote : this.votes) {
             int scoreForA = vote.getOrDefault(winnerA, 0);
@@ -60,6 +60,8 @@ public class STARVoting {
         double percentageA = (double) totalA / totalVotes;
         double percentageB = (double) totalB / totalVotes;
 
-        return new SecondRound(new SecondRoundResult(winnerA, percentageA), new SecondRoundResult(winnerB, percentageB));
+        return new STARSecondRound(
+                new STARSecondRoundResult(winnerA, percentageA),
+                new STARSecondRoundResult(winnerB, percentageB));
     }
 }

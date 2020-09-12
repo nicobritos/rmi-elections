@@ -12,7 +12,7 @@ import java.util.concurrent.Phaser;
 
 public class AdminServiceImpl extends UnicastRemoteObject implements AdminService, ElectionStatusAware {
     private ElectionStatus electionStatus = ElectionStatus.UNINITIALIZED;
-    private boolean willClose = false;
+    private boolean closing = false;
     // Permite esperar a que todos los votos hayan sido registrados para cerrar los comicios
     // Similar a cuando cierran las puertas de los lugares de votacion pero la gente que ya
     // se encuentra adentro puede realizar su voto
@@ -31,9 +31,9 @@ public class AdminServiceImpl extends UnicastRemoteObject implements AdminServic
     @Override
     public synchronized void close() throws RemoteException, ElectionNotStartedException {
         if (this.electionStatus == ElectionStatus.UNINITIALIZED) throw new ElectionNotStartedException();
-        if (this.willClose) return;
+        if (this.closing) return;
 
-        this.willClose = true;
+        this.closing = true;
 
         // Se queda esperando hasta que todos los threads registrados arriven
         // Si seguimos con la analogia del contador, una vez que llegue a 0
@@ -54,8 +54,8 @@ public class AdminServiceImpl extends UnicastRemoteObject implements AdminServic
     }
 
     @Override
-    public boolean willClose() {
-        return this.willClose;
+    public boolean closing() {
+        return this.closing;
     }
 
     @Override

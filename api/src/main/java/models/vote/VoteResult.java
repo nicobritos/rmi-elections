@@ -1,6 +1,6 @@
 package models.vote;
 
-public class VoteResult<WhileOpen extends CountingSystem, WhenFinished extends CountingSystem> {
+public class VoteResult<WhileOpen extends VotingSystemResults, WhenFinished extends VotingSystemResults> {
     private final WhileOpen whileOpen;
     private final WhenFinished whenFinished;
 
@@ -9,11 +9,18 @@ public class VoteResult<WhileOpen extends CountingSystem, WhenFinished extends C
         this.whenFinished = whenFinished;
     }
 
-    public WhileOpen getWhileOpen() {
+    public WhileOpen getWhileOpenResults() {
+        if (!isOpenElectionsResults()) throw new IllegalStateException();
         return this.whileOpen;
     }
 
-    public WhenFinished getWhenFinished() {
+    public WhenFinished getWhenFinishedResults() {
+        if (isOpenElectionsResults()) throw new IllegalStateException();
         return this.whenFinished;
     }
+
+    public boolean isOpenElectionsResults(){
+        return whileOpen != null;
+    }
+
 }
