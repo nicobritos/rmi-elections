@@ -29,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static utils.CommandUtils.JAVA_OPT;
 import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
 
 public class QueryClient {
@@ -36,7 +37,6 @@ public class QueryClient {
     private static final String OUT_FILE_PARAMETER = "outPath";
     private static final String STATE_PARAMETER = "state";
     private static final String POLLING_STATION_PARAMETER = "id";
-    private static final String JAVA_OPT = "D";
 
     public static void main(String[] args) throws IOException, NotBoundException, ParseException {
         Properties properties = parseCommandLine(args);
@@ -61,6 +61,7 @@ public class QueryClient {
             System.exit(1);
         } catch (RemoteException e) {
             System.err.println("Unknown remote error"); // TODO: Retry query
+            System.err.println(e.getMessage());
         }
     }
 
@@ -69,6 +70,21 @@ public class QueryClient {
         filepathOption.setArgName(OUT_FILE_PARAMETER);
         filepathOption.setRequired(true);
 
+        Properties properties = CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, filepathOption);
+        Properties optionalProperties = parseNonRequiredCommandLine(args);
+
+        if (optionalProperties.contains(STATE_PARAMETER))
+            properties.setProperty(STATE_PARAMETER, optionalProperties.getProperty(STATE_PARAMETER));
+        if (optionalProperties.contains(POLLING_STATION_PARAMETER))
+            properties.setProperty(POLLING_STATION_PARAMETER, optionalProperties.getProperty(POLLING_STATION_PARAMETER));
+
+        return properties;
+    }
+
+    // Apache Commons CLI necesita que parseemos los opcionales antes, porque
+    // el parser siempre chequea requeridos, y si mezclamos opciones requeridas
+    // y no requeridas y estas ultimas no estan se tira una excepcion
+    private static Properties parseNonRequiredCommandLine(String[] args) throws ParseException {
         Option stateOption = new Option(JAVA_OPT, "specifies the province's name");
         stateOption.setArgName(STATE_PARAMETER);
         stateOption.setRequired(false);
@@ -77,7 +93,7 @@ public class QueryClient {
         pollingStationOption.setArgName(POLLING_STATION_PARAMETER);
         pollingStationOption.setRequired(false);
 
-        Properties properties = CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, filepathOption, stateOption, pollingStationOption);
+        Properties properties = CommandUtils.parseCommandLine(args, stateOption, pollingStationOption);
         if (properties.getProperty(STATE_PARAMETER) != null && properties.getProperty(POLLING_STATION_PARAMETER) != null)
             throw new InvalidParameterException("You cannot provide province name and polling station id at the same time");
 

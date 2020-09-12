@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FPTPResults implements Iterable<FPTPResult>, Serializable, VotingSystemResults {
+public class FPTPResults implements Iterable<FPTPResult>, VotingSystemResults {
     private static final long serialVersionUID = 1L;
 
     private final List<FPTPResult> results;

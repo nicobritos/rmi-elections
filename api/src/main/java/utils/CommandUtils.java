@@ -25,6 +25,6 @@ public abstract class CommandUtils {
             options.addOption(option);
         }
 
-        return new DefaultParser().parse(options, args).getOptionProperties(JAVA_OPT);
+        return new DefaultParser().parse(options, args, true).getOptionProperties(JAVA_OPT);
     }
 }

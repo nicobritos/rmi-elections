@@ -16,16 +16,18 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Properties;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static utils.CommandUtils.JAVA_OPT;
 import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
 
 public class VoteClient {
     private static final Logger logger = LoggerFactory.getLogger(VoteClient.class);
     private static final String VOTES_PATH_PARAMETER = "votesPath";
-    private static final String JAVA_OPT = "D";
+    private static final int NUMBER_OF_THREADS = 10;
 
     public static void main(String[] args) throws IOException, NotBoundException, ParseException {
         Properties properties = parseCommandLine(args);
@@ -34,7 +36,8 @@ public class VoteClient {
 
         VoteService voteService = (VoteService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/vote");
         AtomicInteger emittedVotes = new AtomicInteger(0);
-        ExecutorService executorService = Executors.newFixedThreadPool(10);
+        ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
+        CountDownLatch countDownLatch = new CountDownLatch(NUMBER_OF_THREADS);
         for (Vote vote : votes) {
             executorService.execute(() -> {
                 try {
@@ -42,14 +45,22 @@ public class VoteClient {
                     emittedVotes.getAndAdd(1);
                 } catch (ElectionNotStartedException e) {
                     System.err.println("The election has not started yet");
-                    System.exit(1);
                 } catch (ElectionFinishedException e) {
                     System.err.println("The election has already finished");
-                    System.exit(1);
                 } catch (RemoteException e) {
                     System.err.println("Unknown remote error"); // TODO: Retry vote
                 }
+
+                countDownLatch.countDown();
             });
+        }
+
+        while (countDownLatch.getCount() != 0) {
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
 
         System.out.println(emittedVotes + " votes registered");

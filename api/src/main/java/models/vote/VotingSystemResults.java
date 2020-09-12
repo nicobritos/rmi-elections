@@ -1,4 +1,6 @@
 package models.vote;
 
-public interface VotingSystemResults {
+import java.io.Serializable;
+
+public interface VotingSystemResults extends Serializable {
 }

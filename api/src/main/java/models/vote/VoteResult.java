@@ -1,6 +1,8 @@
 package models.vote;
 
-public class VoteResult<WhileOpen extends VotingSystemResults, WhenFinished extends VotingSystemResults> {
+import java.io.Serializable;
+
+public class VoteResult<WhileOpen extends VotingSystemResults, WhenFinished extends VotingSystemResults> implements Serializable {
     private final WhileOpen whileOpen;
     private final WhenFinished whenFinished;
 
@@ -10,17 +12,17 @@ public class VoteResult<WhileOpen extends VotingSystemResults, WhenFinished exte
     }
 
     public WhileOpen getWhileOpenResults() {
-        if (!isOpenElectionsResults()) throw new IllegalStateException();
+        if (!this.isOpenElectionsResults()) throw new IllegalStateException();
         return this.whileOpen;
     }
 
     public WhenFinished getWhenFinishedResults() {
-        if (isOpenElectionsResults()) throw new IllegalStateException();
+        if (this.isOpenElectionsResults()) throw new IllegalStateException();
         return this.whenFinished;
     }
 
     public boolean isOpenElectionsResults(){
-        return whileOpen != null;
+        return this.whileOpen != null;
     }
 
 }

@@ -5,7 +5,7 @@ import models.vote.VotingSystemResults;
 
 import java.io.Serializable;
 
-public class STARResults implements Serializable, VotingSystemResults {
+public class STARResults implements VotingSystemResults {
     private static final long serialVersionUID = 1L;
 
     private final STARFirstRound firstRound;

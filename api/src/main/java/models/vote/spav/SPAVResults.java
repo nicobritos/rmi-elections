@@ -6,7 +6,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SPAVResults implements Serializable, VotingSystemResults {
+public class SPAVResults implements VotingSystemResults {
     private static final long serialVersionUID = 1L;
 
     public static final int TOTAL_ROUNDS = 3;

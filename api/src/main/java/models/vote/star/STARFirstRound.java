@@ -2,11 +2,12 @@ package models.vote.star;
 
 import models.Party;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class STARFirstRound implements Iterable<STARFirstRoundResult> {
+public class STARFirstRound implements Iterable<STARFirstRoundResult>, Serializable {
     private final List<STARFirstRoundResult> results;
 
     public STARFirstRound(List<STARFirstRoundResult> firstRoundResults) {
