@@ -16,7 +16,7 @@ public class AdminServiceImpl extends UnicastRemoteObject implements AdminServic
     // Permite esperar a que todos los votos hayan sido registrados para cerrar los comicios
     // Similar a cuando cierran las puertas de los lugares de votacion pero la gente que ya
     // se encuentra adentro puede realizar su voto
-    private Phaser phaser = new Phaser();
+    private final Phaser phaser = new Phaser();
 
     public AdminServiceImpl() throws RemoteException {
         this.phaser.register();

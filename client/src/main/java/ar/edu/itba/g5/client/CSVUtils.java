@@ -1,8 +1,6 @@
 package ar.edu.itba.g5.client;
 
-import com.opencsv.CSVParserBuilder;
-import com.opencsv.CSVReader;
-import com.opencsv.CSVReaderBuilder;
+import com.opencsv.*;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.ParseException;
 import org.slf4j.Logger;
@@ -10,9 +8,7 @@ import org.slf4j.LoggerFactory;
 import service.AdminService;
 import utils.CommandUtils;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.Reader;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
@@ -28,5 +24,19 @@ public abstract class CSVUtils {
                                 .build()
                 )
                 .build();
+    }
+
+    public static ICSVWriter getWriter(Writer writer) {
+        return new CSVWriterBuilder(writer)
+                .withSeparator(';')
+                .build();
+    }
+
+    public static Reader getFileReader(String filepath) {
+        return new InputStreamReader(ClassLoader.getSystemResourceAsStream(filepath));
+    }
+
+    public static Writer getFileWriter(String filepath) throws FileNotFoundException {
+        return new OutputStreamWriter(new FileOutputStream(filepath));
     }
 }

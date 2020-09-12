@@ -4,7 +4,7 @@ public class VoteResult<WhileOpen extends VotingSystemResults, WhenFinished exte
     private final WhileOpen whileOpen;
     private final WhenFinished whenFinished;
 
-    VoteResult(WhileOpen whileOpen, WhenFinished whenFinished) {
+    protected VoteResult(WhileOpen whileOpen, WhenFinished whenFinished) {
         this.whileOpen = whileOpen;
         this.whenFinished = whenFinished;
     }

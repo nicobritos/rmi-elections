@@ -16,9 +16,10 @@ import java.rmi.RemoteException;
 import java.security.InvalidParameterException;
 import java.util.Properties;
 
+import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
+
 public class AdminClient {
     private static final Logger logger = LoggerFactory.getLogger(AdminClient.class);
-    private static final String SERVER_ADDRESS_PARAMETER = "serverAddress";
     private static final String ACTION_PARAMETER = "action";
     private static final String JAVA_OPT = "D";
 

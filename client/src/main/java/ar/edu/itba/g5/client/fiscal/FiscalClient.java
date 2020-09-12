@@ -18,9 +18,10 @@ import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
+
 public class FiscalClient {
     private static final Logger logger = LoggerFactory.getLogger(FiscalClient.class);
-    private static final String SERVER_ADDRESS_PARAMETER = "serverAddress";
     private static final String POLLING_STATION_PARAMETER = "id";
     private static final String PARTY_NAME_PARAMETER = "party";
     private static final String JAVA_OPT = "D";

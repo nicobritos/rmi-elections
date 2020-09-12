@@ -14,4 +14,9 @@ public enum Party implements Comparable<Party>{
     public static Party from(String name){
         return valueOf(name.toUpperCase());
     }
+
+    @Override
+    public String toString() {
+        return this.name();
+    }
 }

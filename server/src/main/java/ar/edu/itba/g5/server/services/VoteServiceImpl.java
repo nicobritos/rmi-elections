@@ -52,8 +52,7 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
 
     @Override
     public void vote(Vote vote) throws RemoteException {
-        if(!hasElectionStarted()) throw new ElectionNotStartedException();
-
+        if(!this.hasElectionStarted()) throw new ElectionNotStartedException();
         if (this.electionStatusAware.closing()) throw new ElectionFinishedException();
 
         // El register permite saber que un thread llego, es como incrementar un contador

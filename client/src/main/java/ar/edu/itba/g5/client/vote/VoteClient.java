@@ -20,9 +20,10 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
+
 public class VoteClient {
     private static final Logger logger = LoggerFactory.getLogger(VoteClient.class);
-    private static final String SERVER_ADDRESS_PARAMETER = "serverAddress";
     private static final String VOTES_PATH_PARAMETER = "votesPath";
     private static final String JAVA_OPT = "D";
 
