@@ -20,6 +20,8 @@
 			<directory>src/main/assembly/overlay</directory>
 			<outputDirectory>/</outputDirectory>
 			<filtered>true</filtered>
+			<!-- TODO:check that works -->
+			<fileMode>777</fileMode>
 		</fileSet>
 		<fileSet>
 			<directory>${project.build.directory}/site</directory>
