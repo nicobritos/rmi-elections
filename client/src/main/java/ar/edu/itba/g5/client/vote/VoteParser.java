@@ -22,20 +22,25 @@ public abstract class VoteParser {
     private static final int CANDIDATES_INDEX = 2;
     private static final int FPTP_CANDIDATE_INDEX = 3;
 
-    public static Collection<Vote> parse(String filepath) throws IOException {
+    public static Collection<Vote> parse(String filepath) {
         Collection<Vote> votes = new LinkedList<>();
+        try {
+            CSVReader reader = CSVUtils.getReader(new FileReader(new File(filepath)));
+            for (String[] line : reader) {
+                PollingStation table = new PollingStation(Integer.parseInt(line[TABLE_INDEX]));
+                Province province = Province.from(line[PROVINCE_INDEX]);
+                Map<Party, Integer> rankedParties = parseRankedParties(line[CANDIDATES_INDEX]);
+                Party fptpCandidate = Party.from(line[FPTP_CANDIDATE_INDEX]);
 
-        CSVReader reader = CSVUtils.getReader(new FileReader(new File(filepath)));
-        for (String[] line : reader) {
-            PollingStation table = new PollingStation(Integer.parseInt(line[TABLE_INDEX]));
-            Province province = Province.from(line[PROVINCE_INDEX]);
-            Map<Party, Integer> rankedParties = parseRankedParties(line[CANDIDATES_INDEX]);
-            Party fptpCandidate = Party.from(line[FPTP_CANDIDATE_INDEX]);
-
-            votes.add(new Vote(table, province, rankedParties, fptpCandidate));
+                votes.add(new Vote(table, province, rankedParties, fptpCandidate));
+            }
+            reader.close();
+        } catch (IOException e) {
+            System.err.println("Error while trying to read vote's file from" + filepath);
+        } catch (NumberFormatException e) {
+            System.err.println("Invalid polling station number identifier.");
         }
 
-        reader.close(); // TODO: Mejorar por excepcion en medio del for
         return votes;
     }
 

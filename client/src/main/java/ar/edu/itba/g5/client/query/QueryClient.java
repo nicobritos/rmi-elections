@@ -42,22 +42,25 @@ public class QueryClient {
         Properties properties = parseCommandLine(args);
         String filepath = properties.getProperty(OUT_FILE_PARAMETER);
 
-        QueryService queryService = (QueryService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/query");
+        QueryService queryService =
+                (QueryService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/query");
         String parameter;
         try {
             parameter = properties.getProperty(STATE_PARAMETER);
             if (parameter != null) {
-                VoteResult<FPTPResults, SPAVResults> voteResult = queryService.provinceResults(Province.from(parameter));
+                VoteResult<FPTPResults, SPAVResults> voteResult =
+                        queryService.provinceResults(Province.from(parameter));
                 QueryWriter.writeProvinceResults(voteResult, filepath);
             } else if ((parameter = properties.getProperty(POLLING_STATION_PARAMETER)) != null) {
-                VoteResult<FPTPResults, FPTPResults> voteResult = queryService.pollingStationResults(new PollingStation(Integer.parseInt(parameter)));
+                VoteResult<FPTPResults, FPTPResults> voteResult =
+                        queryService.pollingStationResults(new PollingStation(Integer.parseInt(parameter)));
                 QueryWriter.writePollingStationResults(voteResult, filepath);
             } else {
                 VoteResult<FPTPResults, STARResults> voteResult = queryService.nationalResults();
                 QueryWriter.writeNationalResults(voteResult, filepath);
             }
         } catch (ElectionNotStartedException e) {
-            System.err.println("The election has not started yet");
+            System.err.println(e.getMessage());
             System.exit(1);
         } catch (RemoteException e) {
             System.err.println("Unknown remote error"); // TODO: Retry query
@@ -76,7 +79,8 @@ public class QueryClient {
         if (optionalProperties.contains(STATE_PARAMETER))
             properties.setProperty(STATE_PARAMETER, optionalProperties.getProperty(STATE_PARAMETER));
         if (optionalProperties.contains(POLLING_STATION_PARAMETER))
-            properties.setProperty(POLLING_STATION_PARAMETER, optionalProperties.getProperty(POLLING_STATION_PARAMETER));
+            properties.setProperty(POLLING_STATION_PARAMETER,
+                    optionalProperties.getProperty(POLLING_STATION_PARAMETER));
 
         return properties;
     }
@@ -95,7 +99,8 @@ public class QueryClient {
 
         Properties properties = CommandUtils.parseCommandLine(args, stateOption, pollingStationOption);
         if (properties.getProperty(STATE_PARAMETER) != null && properties.getProperty(POLLING_STATION_PARAMETER) != null)
-            throw new InvalidParameterException("You cannot provide province name and polling station id at the same time");
+            throw new InvalidParameterException("You cannot provide province name and polling station id at the same " +
+                    "time");
 
         return properties;
     }

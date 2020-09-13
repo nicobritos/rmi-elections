@@ -1,5 +1,8 @@
 package ar.edu.itba.g5.client.fiscal;
 
+import exceptions.ElectionFinishedException;
+import exceptions.ElectionNotStartedException;
+import exceptions.ElectionStartedException;
 import models.Party;
 import models.PollingStation;
 import org.apache.commons.cli.Option;
@@ -28,18 +31,24 @@ public class FiscalClient {
     public static void main(String[] args) throws IOException, NotBoundException, ParseException {
         Properties properties = parseCommandLine(args);
 
-        PollingStation pollingStation = new PollingStation(Integer.parseInt(properties.getProperty(POLLING_STATION_PARAMETER)));
+        PollingStation pollingStation =
+                new PollingStation(Integer.parseInt(properties.getProperty(POLLING_STATION_PARAMETER)));
         Party party = Party.from(properties.getProperty(PARTY_NAME_PARAMETER));
 
-        FiscalService fiscalService = (FiscalService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/fiscal");
+        FiscalService fiscalService =
+                (FiscalService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/fiscal");
         FiscalVoteCallback voteCallback = new FiscalClientCallback(pollingStation, party);
 
-        // TODO: Try catch
-        fiscalService.registerFiscal(
-                pollingStation,
-                party,
-                voteCallback
-        );
+        try {
+            fiscalService.registerFiscal(pollingStation, party, voteCallback);
+        } catch (RemoteException e) {
+            System.err.println("Unknown remote error");
+            e.printStackTrace();
+        } catch (ElectionStartedException e) {
+            System.err.println(e.getMessage());
+        } catch (ElectionFinishedException e) {
+            System.err.println(e.getMessage());
+        }
         System.out.println("Fiscal of " + party + " registered on polling place " + pollingStation);
     }
 
@@ -52,7 +61,8 @@ public class FiscalClient {
         partyNameOption.setArgName(PARTY_NAME_PARAMETER);
         partyNameOption.setRequired(true);
 
-        return CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, pollingStationOption, partyNameOption);
+        return CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, pollingStationOption,
+                partyNameOption);
     }
 
     private static class FiscalClientCallback extends UnicastRemoteObject implements FiscalVoteCallback {

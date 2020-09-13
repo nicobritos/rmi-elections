@@ -19,7 +19,7 @@ public class Server {
     private static Registry registry;
 
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
-        logger.info("elecciones Server Starting ...");
+        logger.info("Elections Server Starting ...");
 
         Server.registry = LocateRegistry.createRegistry(1100); // TODO
 

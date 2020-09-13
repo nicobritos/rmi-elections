@@ -23,10 +23,12 @@ public class AdminClient {
     private static final Logger logger = LoggerFactory.getLogger(AdminClient.class);
     private static final String ACTION_PARAMETER = "action";
 
-    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException, ParseException {
+    public static void main(String[] args) throws RemoteException, NotBoundException, MalformedURLException,
+            ParseException {
         Properties properties = parseCommandLine(args);
 
-        AdminService adminService = (AdminService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/admin");
+        AdminService adminService =
+                (AdminService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/admin");
 
         String action = properties.getProperty(ACTION_PARAMETER);
         switch (action) {
@@ -34,28 +36,28 @@ public class AdminClient {
                 try {
                     adminService.open();
                 } catch (ElectionFinishedException e) {
-                    System.err.println("You cannot open an election that has finished");
+                    System.err.println(e.getMessage() + " You can not open it again.");
                     System.exit(1);
                 } catch (RemoteException e) {
                     System.err.println("An unknown remote error occurred");
                     System.exit(1);
                 }
 
-                System.out.println("The election has started");
+                System.out.println("The election has been started successfully");
                 break;
             }
             case "close": {
                 try {
                     adminService.close();
                 } catch (ElectionNotStartedException e) {
-                    System.err.println("You cannot close an election that has not been started");
+                    System.err.println(e.getMessage() + "You can not close it before opening it.");
                     System.exit(1);
                 } catch (RemoteException e) {
                     System.err.println("An unknown remote error occurred");
                     System.exit(1);
                 }
 
-                System.out.println("The election have started");
+                System.out.println("The election has been closed successfully");
                 break;
             }
             case "state": {
@@ -63,7 +65,8 @@ public class AdminClient {
                 System.out.println(status.toString());
                 break;
             }
-            default: throw new InvalidParameterException("\"" + action + "\" is not a supported action");
+            default:
+                throw new InvalidParameterException("\"" + action + "\" is not a supported action");
         }
     }
 

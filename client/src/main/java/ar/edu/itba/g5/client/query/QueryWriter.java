@@ -41,43 +41,56 @@ public abstract class QueryWriter {
     private static final String FLOAT_FORMAT = "%.2f";
     private static final String PERCENTAGE_FORMAT = "%.2f%%";
 
-    public static void writeNationalResults(VoteResult<FPTPResults, STARResults> voteResult, String filepath) throws IOException {
-        ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
+    public static void writeNationalResults(VoteResult<FPTPResults, STARResults> voteResult, String filepath) {
+        try {
+            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
 
-        if (voteResult.isOpenElectionsResults())
-            writeFPTPResults(voteResult.getWhileOpenResults(), writer);
-        else
-            writeSTARResults(voteResult.getWhenFinishedResults(), writer);
+            if (voteResult.isOpenElectionsResults()) {
+                writeFPTPResults(voteResult.getWhileOpenResults(), writer);
+            } else {
+                writeSTARResults(voteResult.getWhenFinishedResults(), writer);
+            }
 
-        writer.close(); // TODO: Mejorar por excepcion
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Error while trying to write National election results into" + filepath);
+        }
     }
 
-    public static void writeProvinceResults(VoteResult<FPTPResults, SPAVResults> voteResult, String filepath) throws IOException {
-        ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
+    public static void writeProvinceResults(VoteResult<FPTPResults, SPAVResults> voteResult, String filepath) {
+        try {
+            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
 
-        if (voteResult.isOpenElectionsResults())
-            writeFPTPResults(voteResult.getWhileOpenResults(), writer);
-        else
-            writeSPAVResults(voteResult.getWhenFinishedResults(), writer);
+            if (voteResult.isOpenElectionsResults())
+                writeFPTPResults(voteResult.getWhileOpenResults(), writer);
+            else
+                writeSPAVResults(voteResult.getWhenFinishedResults(), writer);
 
-        writer.close(); // TODO: Mejorar por excepcion
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Error while trying to write Provincial election results into" + filepath);
+        }
     }
 
-    public static void writePollingStationResults(VoteResult<FPTPResults, FPTPResults> voteResult, String filepath) throws IOException {
-        ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
+    public static void writePollingStationResults(VoteResult<FPTPResults, FPTPResults> voteResult, String filepath) {
+        try {
+            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
 
-        if (voteResult.isOpenElectionsResults())
-            writeFPTPResults(voteResult.getWhileOpenResults(), writer);
-        else
-            writeFPTPResults(voteResult.getWhenFinishedResults(), writer);
+            if (voteResult.isOpenElectionsResults())
+                writeFPTPResults(voteResult.getWhileOpenResults(), writer);
+            else
+                writeFPTPResults(voteResult.getWhenFinishedResults(), writer);
 
-        writer.close(); // TODO: Mejorar por excepcion
+            writer.close();
+        } catch (IOException e) {
+            System.err.println("Error while trying to write Polling Station election results into" + filepath);
+        }
     }
 
     private static void writeFPTPResults(FPTPResults results, ICSVWriter writer) {
-        writer.writeNext(new String[] {PERCENTAGE_HEADER, PARTY_HEADER} );
+        writer.writeNext(new String[]{PERCENTAGE_HEADER, PARTY_HEADER});
         for (FPTPResult result : results) {
-            writer.writeNext(new String[] {
+            writer.writeNext(new String[]{
                     String.format(PERCENTAGE_FORMAT, result.getPercentage()),
                     result.getParty().name()
             });
@@ -86,46 +99,46 @@ public abstract class QueryWriter {
 
     private static void writeSTARResults(STARResults results, ICSVWriter writer) {
         // First round
-        writer.writeNext(new String[] {SCORE_HEADER, PARTY_HEADER} );
+        writer.writeNext(new String[]{SCORE_HEADER, PARTY_HEADER});
         for (STARFirstRoundResult result : results.getFirstRound()) {
-            writer.writeNext(new String[] {
+            writer.writeNext(new String[]{
                     String.valueOf(result.getScore()),
                     result.getParty().name()
             });
         }
 
         // Second round
-        writer.writeNext(new String[] {PERCENTAGE_HEADER, PARTY_HEADER} );
+        writer.writeNext(new String[]{PERCENTAGE_HEADER, PARTY_HEADER});
         for (STARSecondRoundResult result : results.getSecondRound()) {
-            writer.writeNext(new String[] {
+            writer.writeNext(new String[]{
                     String.format(PERCENTAGE_FORMAT, result.getPercentage()),
                     result.getParty().name()
             });
         }
 
         // Second round
-        writer.writeNext(new String[] {WINNER_HEADER} );
-        writer.writeNext(new String[] {results.getWinner().name()} );
+        writer.writeNext(new String[]{WINNER_HEADER});
+        writer.writeNext(new String[]{results.getWinner().name()});
     }
 
     private static void writeSPAVResults(SPAVResults results, ICSVWriter writer) {
         // Empezamos en 1 porque getRound tiene index empezando con 1
         for (int i = 1; i <= SPAVResults.TOTAL_ROUNDS; i++) {
-            writer.writeNext(new String[] {String.format(ROUND_FORMAT, i)} );
-            writer.writeNext(new String[] {APPROVAL_HEADER, PARTY_HEADER} );
+            writer.writeNext(new String[]{String.format(ROUND_FORMAT, i)});
+            writer.writeNext(new String[]{APPROVAL_HEADER, PARTY_HEADER});
 
             SPAVRoundResult roundResult = results.getRound(i);
             for (SPAVResult result : roundResult) {
-                writer.writeNext(new String[] {
+                writer.writeNext(new String[]{
                         String.format(FLOAT_FORMAT, result.getApprovalScore()),
                         result.getParty().name()
                 });
             }
 
-            writer.writeNext(new String[] {WINNERS_HEADER} );
+            writer.writeNext(new String[]{WINNERS_HEADER});
 
             List<String> winners = roundResult.getWinners().stream().map(Enum::name).collect(Collectors.toList());
-            writer.writeNext(new String[] {String.join(",", winners)} );
+            writer.writeNext(new String[]{String.join(",", winners)});
         }
     }
 }

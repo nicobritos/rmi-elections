@@ -52,7 +52,8 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
         this.provinceSPAVVoting = Collections.unmodifiableMap(this.provinceSPAVVoting);
         this.provinceFPTPVoting = Collections.unmodifiableMap(this.provinceFPTPVoting);
 
-        this.cachedResults = new VoteCachedResults(this.nationalSTARVoting, this.provinceSPAVVoting, this.pollingStationFPTPVoting);
+        this.cachedResults = new VoteCachedResults(this.nationalSTARVoting, this.provinceSPAVVoting,
+                this.pollingStationFPTPVoting);
     }
 
     @Override
@@ -104,7 +105,8 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
         if (!this.hasElectionStarted()) throw new ElectionNotStartedException();
 
         if (this.isElectionOpen())
-            return VoteResultFactory.withOpenElection(this.pollingStationFPTPVoting.getOrDefault(pollingStation, new FPTPVoting()).getResults());
+            return VoteResultFactory.withOpenElection(this.pollingStationFPTPVoting.getOrDefault(pollingStation,
+                    new FPTPVoting()).getResults());
 
         return VoteResultFactory.withFinishedElection(this.cachedResults.getPollingStationResults(pollingStation));
     }

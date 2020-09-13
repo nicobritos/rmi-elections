@@ -34,7 +34,8 @@ public class VoteClient {
         String filepath = properties.getProperty(VOTES_PATH_PARAMETER);
         Collection<Vote> votes = VoteParser.parse(filepath);
 
-        VoteService voteService = (VoteService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/vote");
+        VoteService voteService =
+                (VoteService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/vote");
         AtomicInteger emittedVotes = new AtomicInteger(0);
         ExecutorService executorService = Executors.newFixedThreadPool(NUMBER_OF_THREADS);
         CountDownLatch countDownLatch = new CountDownLatch(NUMBER_OF_THREADS);
@@ -44,9 +45,9 @@ public class VoteClient {
                     voteService.vote(vote);
                     emittedVotes.getAndAdd(1);
                 } catch (ElectionNotStartedException e) {
-                    System.err.println("The election has not started yet");
+                    System.err.println(e.getMessage());
                 } catch (ElectionFinishedException e) {
-                    System.err.println("The election has already finished");
+                    System.err.println(e.getMessage());
                 } catch (RemoteException e) {
                     System.err.println("Unknown remote error"); // TODO: Retry vote
                 }

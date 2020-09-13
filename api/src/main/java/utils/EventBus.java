@@ -15,7 +15,8 @@ public class EventBus {
     }
 
     public void register(String eventName, EventListener eventListener) {
-        Collection<EventListener> eventListeners = this.listeners.computeIfAbsent(eventName, s -> new CopyOnWriteArraySet <>());
+        Collection<EventListener> eventListeners = this.listeners.computeIfAbsent(eventName,
+                s -> new CopyOnWriteArraySet<>());
         eventListeners.add(eventListener);
     }
 

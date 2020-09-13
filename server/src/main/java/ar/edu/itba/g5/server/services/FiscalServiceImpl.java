@@ -40,7 +40,8 @@ public class FiscalServiceImpl extends UnicastRemoteObject implements FiscalServ
         if (this.electionStatusAware.getElectionStatus() == ElectionStatus.FINISHED)
             throw new ElectionFinishedException();
 
-        ElectionEventBus.eventBus.register(ElectionEvents.getEventName(party, pollingStation), event -> this.fireEvent(event, callback));
+        ElectionEventBus.eventBus.register(ElectionEvents.getEventName(party, pollingStation),
+                event -> this.fireEvent(event, callback));
     }
 
     private void fireEvent(Event event, FiscalVoteCallback callback) {

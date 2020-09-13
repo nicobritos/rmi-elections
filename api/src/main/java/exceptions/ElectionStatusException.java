@@ -1,4 +1,4 @@
 package exceptions;
 
-public class ElectionStatusException extends IllegalStateException{
+public class ElectionStatusException extends IllegalStateException {
 }
