@@ -16,7 +16,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.CommandUtils.JAVA_OPT;
 import static utils.CommandUtils.SERVER_ADDRESS_PARAMETER;
@@ -59,19 +58,16 @@ public class FiscalClient {
     private static class FiscalClientCallback extends UnicastRemoteObject implements FiscalVoteCallback {
         private final PollingStation pollingStation;
         private final Party party;
-        private final AtomicInteger count;
 
         public FiscalClientCallback(PollingStation pollingStation, Party party) throws RemoteException {
             super();
             this.pollingStation = pollingStation;
             this.party = party;
-            this.count = new AtomicInteger(0);
         }
 
         @Override
         public void voteMade() throws RemoteException {
-            int count = this.count.addAndGet(1);
-            System.out.println("[" + count + "] New vote for " + this.party + " registered on polling station " + this.pollingStation);
+            System.out.println("New vote for " + this.party + " registered on polling station " + this.pollingStation);
         }
     }
 }

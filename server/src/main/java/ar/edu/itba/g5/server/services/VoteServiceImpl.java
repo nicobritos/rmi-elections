@@ -6,6 +6,7 @@ import ar.edu.itba.g5.server.services.utils.ElectionEventBus;
 import ar.edu.itba.g5.server.vote.FPTPVoting;
 import ar.edu.itba.g5.server.vote.SPAVVoting;
 import ar.edu.itba.g5.server.vote.STARVoting;
+import ar.edu.itba.g5.server.vote.VoteCachedResults;
 import exceptions.ElectionFinishedException;
 import exceptions.ElectionNotStartedException;
 import models.*;
@@ -38,6 +39,8 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
     private final Map<PollingStation, FPTPVoting> pollingStationFPTPVoting = new HashMap<>();
     private final Lock pollingStationLock = new ReentrantLock();
 
+    private final VoteCachedResults cachedResults;
+
     public VoteServiceImpl(ElectionStatusAware electionStatusAware) throws RemoteException {
         this.electionStatusAware = electionStatusAware;
 
@@ -48,19 +51,20 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
 
         this.provinceSPAVVoting = Collections.unmodifiableMap(this.provinceSPAVVoting);
         this.provinceFPTPVoting = Collections.unmodifiableMap(this.provinceFPTPVoting);
+
+        this.cachedResults = new VoteCachedResults(this.nationalSTARVoting, this.provinceSPAVVoting, this.pollingStationFPTPVoting);
     }
 
     @Override
     public void vote(Vote vote) throws RemoteException {
-        if(!this.hasElectionStarted()) throw new ElectionNotStartedException();
+        if (!this.hasElectionStarted()) throw new ElectionNotStartedException();
         if (this.electionStatusAware.closing()) throw new ElectionFinishedException();
 
         // El register permite saber que un thread llego, es como incrementar un contador
         // Permite que si justo se llama a cerrar comicios, se quede esperando hasta realmente cerrarlos
         this.electionStatusAware.getElectionPhaser().register();
 
-        if (this.electionStatusAware.getElectionStatus() == ElectionStatus.FINISHED)
-        {
+        if (this.electionStatusAware.getElectionStatus() == ElectionStatus.FINISHED) {
 
             // Marco que arriva y deregistro el thread actual para desbloquear ejecucion
             // en AdminService. Es como decrementar el contador
@@ -76,40 +80,33 @@ public class VoteServiceImpl extends UnicastRemoteObject implements VoteService,
     }
 
     @Override
-    public VoteResult<FPTPResults, STARResults> nationalResults(){
-        if(!this.hasElectionStarted()) throw new ElectionNotStartedException();
+    public VoteResult<FPTPResults, STARResults> nationalResults() {
+        if (!this.hasElectionStarted()) throw new ElectionNotStartedException();
 
-        if (this.isElectionOpen()) return VoteResultFactory.withOpenElection(this.nationalFPTPVoting.getResults());
-        return VoteResultFactory.withFinishedElection(this.nationalSTARVoting.getResults());
+        if (this.isElectionOpen())
+            return VoteResultFactory.withOpenElection(this.nationalFPTPVoting.getResults());
+
+        return VoteResultFactory.withFinishedElection(this.cachedResults.getNationalResults());
     }
 
     @Override
     public VoteResult<FPTPResults, SPAVResults> provinceResults(Province province) {
-        if(!this.hasElectionStarted()) throw new ElectionNotStartedException();
+        if (!this.hasElectionStarted()) throw new ElectionNotStartedException();
 
-        if (this.isElectionOpen()) return VoteResultFactory.withOpenElection(this.provinceFPTPVoting.get(province).getResults());
+        if (this.isElectionOpen())
+            return VoteResultFactory.withOpenElection(this.provinceFPTPVoting.get(province).getResults());
 
-        SPAVVoting spavVoting = this.provinceSPAVVoting.get(province);
-
-        SPAVRoundResult firstRoundResults = spavVoting.nextRound(Collections.emptyList());
-        SPAVRoundResult secondRoundResults = spavVoting.nextRound(firstRoundResults.getWinners());
-        SPAVRoundResult thirdRoundResults = spavVoting.nextRound(secondRoundResults.getWinners());
-
-        return VoteResultFactory.withFinishedElection(new SPAVResults(
-                firstRoundResults,
-                secondRoundResults,
-                thirdRoundResults
-        ));
+        return VoteResultFactory.withFinishedElection(this.cachedResults.getProvinceResults(province));
     }
 
     @Override
     public VoteResult<FPTPResults, FPTPResults> pollingStationResults(PollingStation pollingStation) {
-        if(!this.hasElectionStarted()) throw new ElectionNotStartedException();
+        if (!this.hasElectionStarted()) throw new ElectionNotStartedException();
 
         if (this.isElectionOpen())
             return VoteResultFactory.withOpenElection(this.pollingStationFPTPVoting.getOrDefault(pollingStation, new FPTPVoting()).getResults());
 
-        return VoteResultFactory.withFinishedElection(this.pollingStationFPTPVoting.getOrDefault(pollingStation, new FPTPVoting()).getResults());
+        return VoteResultFactory.withFinishedElection(this.cachedResults.getPollingStationResults(pollingStation));
     }
 
     private void registerVote(Vote vote) {
