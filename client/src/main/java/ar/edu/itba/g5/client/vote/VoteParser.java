@@ -9,6 +9,8 @@ import models.Vote;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
@@ -23,7 +25,7 @@ public abstract class VoteParser {
     public static Collection<Vote> parse(String filepath) throws IOException {
         Collection<Vote> votes = new LinkedList<>();
 
-        CSVReader reader = CSVUtils.getReader(new InputStreamReader(ClassLoader.getSystemResourceAsStream(filepath)));
+        CSVReader reader = CSVUtils.getReader(new FileReader(new File(filepath)));
         for (String[] line : reader) {
             PollingStation table = new PollingStation(Integer.parseInt(line[TABLE_INDEX]));
             Province province = Province.from(line[PROVINCE_INDEX]);
