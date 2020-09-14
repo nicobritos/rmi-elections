@@ -42,46 +42,36 @@ public abstract class QueryWriter {
     private static final String PERCENTAGE_FORMAT = "%.2f%%";
 
     public static void writeNationalResults(VoteResult<FPTPResults, STARResults> voteResult, String filepath) {
-        try {
-            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
-
-            if (voteResult.isOpenElectionsResults()) {
+        try (ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath))) {
+            if (voteResult.isOpenElectionsResults())
                 writeFPTPResults(voteResult.getWhileOpenResults(), writer);
-            } else {
+            else
                 writeSTARResults(voteResult.getWhenFinishedResults(), writer);
-            }
 
-            writer.close();
         } catch (IOException e) {
             System.err.println("Error while trying to write National election results into" + filepath);
         }
     }
 
     public static void writeProvinceResults(VoteResult<FPTPResults, SPAVResults> voteResult, String filepath) {
-        try {
-            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
-
+        try (ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath))) {
             if (voteResult.isOpenElectionsResults())
                 writeFPTPResults(voteResult.getWhileOpenResults(), writer);
             else
                 writeSPAVResults(voteResult.getWhenFinishedResults(), writer);
 
-            writer.close();
         } catch (IOException e) {
             System.err.println("Error while trying to write Provincial election results into" + filepath);
         }
     }
 
     public static void writePollingStationResults(VoteResult<FPTPResults, FPTPResults> voteResult, String filepath) {
-        try {
-            ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath));
-
+        try (ICSVWriter writer = CSVUtils.getWriter(CSVUtils.getFileWriter(filepath))) {
             if (voteResult.isOpenElectionsResults())
                 writeFPTPResults(voteResult.getWhileOpenResults(), writer);
             else
                 writeFPTPResults(voteResult.getWhenFinishedResults(), writer);
 
-            writer.close();
         } catch (IOException e) {
             System.err.println("Error while trying to write Polling Station election results into" + filepath);
         }

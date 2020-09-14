@@ -76,12 +76,9 @@ public class QueryClient {
         Properties properties = CommandUtils.parseCommandLine(args, CommandUtils.serverAddressOption, filepathOption);
         Properties optionalProperties = parseNonRequiredCommandLine(args);
 
-        if (optionalProperties.contains(STATE_PARAMETER))
-            properties.setProperty(STATE_PARAMETER, optionalProperties.getProperty(STATE_PARAMETER));
-        if (optionalProperties.contains(POLLING_STATION_PARAMETER))
-            properties.setProperty(POLLING_STATION_PARAMETER,
-                    optionalProperties.getProperty(POLLING_STATION_PARAMETER));
-
+        for (String property : optionalProperties.stringPropertyNames()) {
+            properties.setProperty(property, optionalProperties.getProperty(property));
+        }
         return properties;
     }
 

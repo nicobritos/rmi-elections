@@ -77,7 +77,7 @@ public class FiscalClient {
 
         @Override
         public void voteMade() throws RemoteException {
-            System.out.println("New vote for " + this.party + " registered on polling station " + this.pollingStation);
+            System.out.println("New vote for " + this.party + "on polling place " + this.pollingStation);
         }
     }
 }

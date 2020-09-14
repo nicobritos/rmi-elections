@@ -43,7 +43,7 @@ public class AdminClient {
                     System.exit(1);
                 }
 
-                System.out.println("The election has been started successfully");
+                System.out.println("Election Started");
                 break;
             }
             case "close": {
@@ -57,7 +57,7 @@ public class AdminClient {
                     System.exit(1);
                 }
 
-                System.out.println("The election has been closed successfully");
+                System.out.println("Election Closed");
                 break;
             }
             case "state": {

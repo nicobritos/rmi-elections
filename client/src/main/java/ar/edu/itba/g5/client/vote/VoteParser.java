@@ -24,8 +24,7 @@ public abstract class VoteParser {
 
     public static Collection<Vote> parse(String filepath) {
         Collection<Vote> votes = new LinkedList<>();
-        try {
-            CSVReader reader = CSVUtils.getReader(new FileReader(new File(filepath)));
+        try (CSVReader reader = CSVUtils.getReader(new FileReader(new File(filepath)))) {
             for (String[] line : reader) {
                 PollingStation table = new PollingStation(Integer.parseInt(line[TABLE_INDEX]));
                 Province province = Province.from(line[PROVINCE_INDEX]);
@@ -34,13 +33,9 @@ public abstract class VoteParser {
 
                 votes.add(new Vote(table, province, rankedParties, fptpCandidate));
             }
-            reader.close();
         } catch (IOException e) {
             System.err.println("Error while trying to read vote's file from" + filepath);
-        } catch (NumberFormatException e) {
-            System.err.println("Invalid polling station number identifier.");
         }
-
         return votes;
     }
 
@@ -50,13 +45,12 @@ public abstract class VoteParser {
         Map<Party, Integer> rankedParties = new HashMap<>();
 
         String[] rankedCandidates = line.split(",");
-        for (int i = 0; i < rankedCandidates.length; i++) {
-            String[] lines = rankedCandidates[i].split("\\|");
+        for (String rankedCandidate : rankedCandidates) {
+            String[] lines = rankedCandidate.split("\\|");
 
             Party party = Party.from(lines[0]);
             rankedParties.put(party, Integer.valueOf(lines[1]));
         }
-
         return rankedParties;
     }
 }
