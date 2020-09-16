@@ -11,7 +11,7 @@
     <groupId>ar.edu.itba.g5</groupId>
     <artifactId>elecciones-api</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <name>elecciones-api</name>
+    <name>tpe1-g5-api</name>
 
     <dependencies>
         <dependency>
