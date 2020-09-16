@@ -15,14 +15,13 @@
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-
-        <slf4j.version>1.7.12</slf4j.version>
+        <com.opencsv.version>5.2</com.opencsv.version>
         <com.sun.istack.version>3.0.8</com.sun.istack.version>
         <commons-cli.version>1.4</commons-cli.version>
-        <com.opencsv.version>5.2</com.opencsv.version>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <slf4j.version>1.7.12</slf4j.version>
     </properties>
 
     <dependencyManagement>
@@ -31,13 +30,6 @@
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast-all</artifactId>
                 <version>3.6.5</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.logging.log4j</groupId>
-                <artifactId>log4j-bom</artifactId>
-                <version>2.6.2</version>
-                <type>pom</type>
-                <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -65,6 +57,13 @@
                 <groupId>com.opencsv</groupId>
                 <artifactId>opencsv</artifactId>
                 <version>${com.opencsv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.logging.log4j</groupId>
+                <artifactId>log4j-bom</artifactId>
+                <version>2.6.2</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <!-- BEGIN: TEST -->
             <dependency>
