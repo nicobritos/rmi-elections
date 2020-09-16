@@ -5,12 +5,12 @@
 $> mvn clean install
 ```
 ## Ejecición
-  ##Servidor
+####Servidor
   ```bash
   $> run-server.sh
   ```
   
-  ##Clientes
+####Clientes
   
   ```bash
   $> run-fiscal.sh
