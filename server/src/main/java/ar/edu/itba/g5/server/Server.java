@@ -21,7 +21,7 @@ public class Server {
     public static void main(String[] args) throws RemoteException, AlreadyBoundException {
         logger.info("Elections Server Starting ...");
 
-        Server.registry = LocateRegistry.createRegistry(1100); // TODO
+        Server.registry = LocateRegistry.createRegistry(1099); // TODO
 
         AdminServiceImpl adminService = new AdminServiceImpl();
         registry.bind("admin", adminService);
