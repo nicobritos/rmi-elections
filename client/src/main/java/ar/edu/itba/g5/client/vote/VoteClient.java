@@ -41,17 +41,30 @@ public class VoteClient {
         CountDownLatch countDownLatch = new CountDownLatch(NUMBER_OF_THREADS);
         for (Vote vote : votes) {
             executorService.execute(() -> {
-                try {
-                    voteService.vote(vote);
-                    emittedVotes.getAndAdd(1);
-                } catch (ElectionNotStartedException e) {
-                    System.err.println(e.getMessage());
-                } catch (ElectionFinishedException e) {
-                    System.err.println(e.getMessage());
-                } catch (RemoteException e) {
-                    System.err.println("Unknown remote error"); // TODO: Retry vote
+                int voteAttempts = 2;
+                boolean voted = false;
+                while (voteAttempts > 0 && !voted) {
+                    try {
+                        voteService.vote(vote);
+                        emittedVotes.getAndAdd(1);
+                        voted = true;
+                    } catch (ElectionNotStartedException e) {
+                        System.err.println(e.getMessage());
+                        voteAttempts -= 2;
+                    } catch (ElectionFinishedException e) {
+                        System.err.println(e.getMessage());
+                        voteAttempts -= 2;
+                    } catch (RemoteException e) {
+                        try {
+                            System.err.println("Unknown remote error, will retry in 2s");
+                            System.err.println(e.getMessage());
+                            Thread.sleep(2000);
+                        } catch (InterruptedException ex) {
+                            System.err.println(ex.getMessage());
+                        }
+                        voteAttempts--;
+                    }
                 }
-
                 countDownLatch.countDown();
             });
         }

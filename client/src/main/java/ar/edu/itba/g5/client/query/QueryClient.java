@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static utils.CommandUtils.JAVA_OPT;
@@ -38,33 +39,25 @@ public class QueryClient {
     private static final String STATE_PARAMETER = "state";
     private static final String POLLING_STATION_PARAMETER = "id";
 
-    public static void main(String[] args) throws IOException, NotBoundException, ParseException {
+    public static void main(String[] args) throws IOException, NotBoundException, ParseException, InterruptedException {
         Properties properties = parseCommandLine(args);
-        String filepath = properties.getProperty(OUT_FILE_PARAMETER);
-
         QueryService queryService =
                 (QueryService) Naming.lookup("//" + properties.getProperty(SERVER_ADDRESS_PARAMETER) + "/query");
-        String parameter;
-        try {
-            parameter = properties.getProperty(STATE_PARAMETER);
-            if (parameter != null) {
-                VoteResult<FPTPResults, SPAVResults> voteResult =
-                        queryService.provinceResults(Province.from(parameter));
-                QueryWriter.writeProvinceResults(voteResult, filepath);
-            } else if ((parameter = properties.getProperty(POLLING_STATION_PARAMETER)) != null) {
-                VoteResult<FPTPResults, FPTPResults> voteResult =
-                        queryService.pollingStationResults(new PollingStation(Integer.parseInt(parameter)));
-                QueryWriter.writePollingStationResults(voteResult, filepath);
-            } else {
-                VoteResult<FPTPResults, STARResults> voteResult = queryService.nationalResults();
-                QueryWriter.writeNationalResults(voteResult, filepath);
+        int queryAttempts = 2;
+        boolean finished = false;
+        while (queryAttempts > 0 && !finished) {
+            try {
+                getRequestedResult(queryService, properties);
+                finished = true;
+            } catch (ElectionNotStartedException e) {
+                System.err.println(e.getMessage());
+                System.exit(1);
+            } catch (RemoteException e) {
+                System.err.println("Unknown remote error, will retry in 2s");
+                System.err.println(e.getMessage());
+                Thread.sleep(2000);
+                queryAttempts--;
             }
-        } catch (ElectionNotStartedException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        } catch (RemoteException e) {
-            System.err.println("Unknown remote error"); // TODO: Retry query
-            System.err.println(e.getMessage());
         }
     }
 
@@ -100,5 +93,24 @@ public class QueryClient {
                     "time");
 
         return properties;
+    }
+
+    private static void getRequestedResult(QueryService queryService, Properties properties) throws RemoteException,
+            ElectionNotStartedException {
+        String filepath = properties.getProperty(OUT_FILE_PARAMETER);
+        String parameter;
+        parameter = properties.getProperty(STATE_PARAMETER);
+        if (parameter != null) {
+            VoteResult<FPTPResults, SPAVResults> voteResult =
+                    queryService.provinceResults(Province.from(parameter));
+            QueryWriter.writeProvinceResults(voteResult, filepath);
+        } else if ((parameter = properties.getProperty(POLLING_STATION_PARAMETER)) != null) {
+            VoteResult<FPTPResults, FPTPResults> voteResult =
+                    queryService.pollingStationResults(new PollingStation(Integer.parseInt(parameter)));
+            QueryWriter.writePollingStationResults(voteResult, filepath);
+        } else {
+            VoteResult<FPTPResults, STARResults> voteResult = queryService.nationalResults();
+            QueryWriter.writeNationalResults(voteResult, filepath);
+        }
     }
 }
