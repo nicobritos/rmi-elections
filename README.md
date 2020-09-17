@@ -1,30 +1,30 @@
 # Trabajo Práctico 1: Elecciones
 
-## Compilación
+Ubicarse en el directorio del proyecto y ejecutar:
 ```bash
 $> mvn clean install
 ```
-## Ejecición
+
 ### Servidor
   ```bash
-  $> run-server.sh
+  $> run-server
   ```
   
 ### Clientes
-  
-  ```bash
-  $> run-fiscal.sh
+#### Cliente de Administracion
+    ```bash
+  $> ./run-management -DserverAddress=xx.xx.xx.xx:yyyy -Daction=actionName
   ```
   
   ```bash
-  $> run-management.sh
+  $> ./run-fiscal -DserverAddress=xx.xx.xx.xx:yyyy -Did=pollingNumber -Dparty=partyName
   ```
   
   ```bash
-  $> run-query.sh
+  $> ./run-query -DserverAddress=xx.xx.xx.xx:yyyy [ -Dstate=stateName | -Did=pollingPlaceNumber ] -DoutPath=fileName
   ```
   
   ```bash
-  $> run-vote.sh
+  $> ./run-vote -DserverAddress=xx.xx.xx.xx:yyyy -DvotesPath=fileName
   ```
   
